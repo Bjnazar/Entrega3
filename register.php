@@ -48,23 +48,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <form method="post">
   
     <div class="form-group">
-      <label for="name">Name:</label>
-      <input type="text" class="form-control" id="name" placeholder="Enter name" name="name" requuired>
+      <label for="name">Nombre:</label>
+      <input type="text" class="form-control" id="name" name="name" requuired>
     </div>
     
     <div class="form-group">
       <label for="email">Email:</label>
-      <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+      <input type="email" class="form-control" id="email" name="email">
     </div>
     
     <div class="form-group">
-      <label for="pwd">Mobile No:</label>
-      <input type="number" class="form-control" maxlength="10" id="mobileno" placeholder="Enter Mobile Number" name="mobno">
+      <label for="password">Contraseña:</label>
+      <input type="password" name="password" class="form-control" id="password"  name="contraseña">
     </div>
     
     <div class="form-group">
-      <label for="pwd">Password:</label>
-      <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+      <label for="pwd">Nombre de Usuario:</label>
+      <input type="text" class="form-control" id="pwd" name="pwd">
+    </div>
+
+    <div class="form-group">
+      <label for="pwd">Nombre de Usuario:</label>
+      <input type="text" class="form-control" id="pwd" name="pwd">
     </div>
      
     <input type="submit" name="submit" class="btn btn-primary" value="Submit">
