@@ -3,22 +3,39 @@
 require_once('../config/conexion.php');
 
 try {
-    $db->beginTransaction();
+    // Extraer los datos de la base de datos db
+    $queryDb = "SELECT DISTINCT pid, nombre FROM mala_proveedores_p;";
+    $data = $db->query($queryDb)->fetchAll(PDO::FETCH_ASSOC);
 
-    $query = "
-        CREATE TABLE Proveedor_p AS
-        SELECT DISTINCT pid AS id_proveedor, nombre
-        FROM mala_proveedores_p;
-    ";
+    // Crear la tabla en db56 y luego insertar los datos
+    $db56->beginTransaction();
 
-    $db->exec($query);
-    $db->commit();
+    // Asegúrate de que la tabla Proveedor_p no exista antes de crearla
+    $db56->exec("CREATE TABLE IF NOT EXISTS Proveedor_p (id_proveedor INT, nombre TEXT);");
 
-    echo "La tabla 'Proveedor' ha sido creada con éxito.";
+    // Preparar consulta para insertar datos en Proveedor_p
+    $insertQuery = $db56->prepare("INSERT INTO Proveedor_p (id_proveedor, nombre) VALUES (:id_proveedor, :nombre);");
+
+    foreach ($data as $row) {
+        $insertQuery->execute([
+            ':id_proveedor' => $row['pid'], 
+            ':nombre' => $row['nombre']
+        ]);
+        if ($insertQuery->rowCount() == 0) {
+            throw new Exception("Error al insertar los datos en Proveedor_p");
+        }
+    }
+
+    $db56->commit();
+
+    echo "La tabla 'Proveedor_p' ha sido creada con éxito en la base de datos db56.";
 
 } catch (PDOException $e) {
-    $db->rollBack();
-    echo "Error: " . $e->getMessage();
+    $db56->rollBack();
+    echo "Error PDO: " . $e->getMessage();
+} catch (Exception $e) {
+    $db56->rollBack();
+    echo "Error General: " . $e->getMessage();
 }
 
 ?>
