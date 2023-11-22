@@ -3,21 +3,30 @@
 require_once('../config/conexion.php');
 
 try {
-    $db->beginTransaction();
+    $db56->beginTransaction();
 
     $query = "
         CREATE TABLE Genero_p AS
-        SELECT DISTINCT id_genero, nombre_genero
-        FROM mala_genero_subgenero_p;
+        SELECT DENSE_RANK() OVER (ORDER BY genero) id_genero, genero
+        FROM (SELECT DISTINCT genero FROM mala_genero_p) AS subquery;
     ";
 
-    $db->exec($query);
-    $db->commit();
+    $db56->exec($query);
+    $db56->commit();
+
+    $queryAddPrimaryKey = "
+        ALTER TABLE Genero_p
+        ADD PRIMARY KEY (id_genero);
+    ";
+
+    $db56->exec($queryAddPrimaryKey);
+
+    $db56->commit();
 
     echo "La tabla 'Genero' ha sido creada con éxito.";
 
 } catch (PDOException $e) {
-    $db->rollBack();
+    $db56->rollBack();
     echo "Error: " . $e->getMessage();
 }
 

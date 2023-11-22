@@ -8,7 +8,7 @@ try {
     $query = "
         CREATE TABLE SubGenero_p AS
         SELECT DISTINCT id_subgenero, nombre_subgenero, id_genero_padre
-        FROM mala_genero_subgenero_p WHERE id_subgenero IS NOT NULL;
+        FROM mala_genero_p WHERE id_subgenero IS NOT NULL;
     ";
 
     $db->exec($query);

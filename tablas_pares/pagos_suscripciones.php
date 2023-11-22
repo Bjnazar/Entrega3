@@ -6,9 +6,13 @@ try {
     $db->beginTransaction();
 
     $query = "
-        CREATE TABLE Pagos_Suscripciones_p AS
-        SELECT DISTINCT uid AS id_usuario, vid AS id_juego, pid AS id_proveedor, fecha
-        FROM mala_pago_p;
+        CREATE TABLE Pagos_Suscripciones AS
+        SELECT 
+            uid AS id_usuario,
+            vid AS id_juego,
+            pid AS id_proveedor,
+            fecha
+        FROM mala_pagos_p;
     ";
 
     $db->exec($query);

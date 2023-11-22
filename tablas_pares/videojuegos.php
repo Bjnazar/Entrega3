@@ -7,7 +7,7 @@ try {
 
     $query = "
         CREATE TABLE Videojuegos AS
-        SELECT DISTINCT vid AS id_videojuego, titulo, puntuacion, clasificacion, fecha_lanzamiento, 
+        SELECT DISTINCT vid AS id_videojuego, titulo, puntuacion, clasificacion, fecha_de_lanzamiento, 
         CASE 
             WHEN mensualidad IS NOT NULL THEN 'subscripción' 
             WHEN precio IS NOT NULL THEN 'pago único' 
