@@ -3,44 +3,12 @@
 require_once('../config/conexion.php');
 
 try {
-    $db->beginTransaction();
-
-    $query = "
-        CREATE TABLE Videojuegos AS
-        SELECT DISTINCT vid AS id_videojuego, titulo, puntuacion, clasificacion, fecha_de_lanzamiento, 
-        CASE 
-            WHEN mensualidad IS NOT NULL THEN 'subscripción' 
-            WHEN precio IS NOT NULL THEN 'pago único' 
-            ELSE 'gratis' 
-        END AS adquisicion
-        FROM mala_videojuego_p;
-    ";
-
-    $db->exec($query);
-    $db->commit();
-
-    echo "La tabla 'Videojuegos' ha sido creada con éxito.";
-
-} catch (PDOException $e) {
-    $db->rollBack();
-    echo "Error: " . $e->getMessage();
-}
-
-?>
-
-
-<?php
-
-require_once('../config/conexion.php');
-
-try {
     // Seleccionar datos de la tabla original
     $queryVideojuegos = "
         SELECT DISTINCT vid AS id_videojuego, titulo, puntuacion, clasificacion, fecha_de_lanzamiento, 
         CASE 
             WHEN mensualidad IS NOT NULL THEN 'subscripción' 
-            WHEN precio IS NOT NULL THEN 'pago único' 
-            ELSE 'gratis' 
+            ELSE 'pago único' 
         END AS adquisicion
         FROM mala_videojuego_p;
     ";
@@ -54,25 +22,24 @@ try {
 
         // Crear la tabla en db56 si no existe
         $db56->exec("CREATE TABLE IF NOT EXISTS Videojuegos (
-            id_videojuego SERIAL PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             titulo TEXT NOT NULL,
-            puntuacion INTEGER,
+            puntuacion FLOAT,
             clasificacion TEXT,
             fecha_de_lanzamiento DATE,
             adquisicion TEXT
         );");
 
-        // Preparar la consulta de inserción
         $insertQuery = $db56->prepare("INSERT INTO Videojuegos (
-            id_videojuego, titulo, puntuacion, clasificacion, fecha_de_lanzamiento, adquisicion
+            id, titulo, puntuacion, clasificacion, fecha_de_lanzamiento, adquisicion
         ) VALUES (
-            :id_videojuego, :titulo, :puntuacion, :clasificacion, :fecha_de_lanzamiento, :adquisicion
+            :id, :titulo, :puntuacion, :clasificacion, :fecha_de_lanzamiento, :adquisicion
         );");
 
         // Insertar datos en la nueva tabla
         foreach ($videojuegos as $row) {
             $insertQuery->execute([
-                ':id_videojuego' => $row['id_videojuego'],
+                ':id' => $row['id_videojuego'],
                 ':titulo' => $row['titulo'],
                 ':puntuacion' => $row['puntuacion'],
                 ':clasificacion' => $row['clasificacion'],

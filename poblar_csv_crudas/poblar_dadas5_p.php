@@ -3,11 +3,11 @@
 require_once('../config/conexion.php');
 
 try {
-    $db56->beginTransaction();
+    $db->beginTransaction();
 
     // Eliminar todos los registros existentes en la tabla mala_usuario_actividades_p
     $delete_query = "DELETE FROM mala_usuario_actividades_p";
-    $db56->exec($delete_query);
+    $db->exec($delete_query);
 
     $file_path = '/home/grupo55/Sites/datos_par/p_usuario_actividades.csv';
     echo "Intentando abrir el archivo: $file_path\n";
@@ -41,7 +41,7 @@ try {
 
                 // Convertir el valor de 'veredicto' a booleano
                 $veredicto = strtolower($row[8]);
-                $veredicto = ($veredicto == 'positivo') ? true : (($veredicto == 'negativo') ? false : null);
+                $veredicto = ($veredicto == 'positivo') ? true : false;
 
                 $titulo = $row[9];
                 $texto = $row[10];
@@ -55,7 +55,7 @@ try {
                     VALUES (:uid, :nombre, :mail, :password, :username, :vid, :fecha_v, :cantidad, :veredicto, :titulo, :texto, :fecha_nacimiento);
                 ";
 
-                $stmt = $db56->prepare($insert_query);
+                $stmt = $db->prepare($insert_query);
                 $stmt->bindParam(':uid', $uid);
                 $stmt->bindParam(':nombre', $nombre);
                 $stmt->bindParam(':mail', $mail);
@@ -73,7 +73,7 @@ try {
 
             fclose($file);
 
-            $db56->commit();
+            $db->commit();
 
             echo "Datos insertados correctamente en la tabla mala_usuario_actividades_p.";
         } else {
@@ -81,7 +81,7 @@ try {
         }
     }
 } catch (Exception $e) {
-    $db56->rollBack();
+    $db->rollBack();
     echo "Error: " . $e->getMessage();
 }
 ?>

@@ -8,19 +8,19 @@ try {
                 WHERE titulo IS NOT NULL;";
     $data = $db->query($queryDb)->fetchAll(PDO::FETCH_ASSOC);
 
+    // Crear la tabla en db56 y luego insertar los datos
+    $db56->beginTransaction();
+
     // Asegúrate de que la tabla Resenas no exista antes de crearla
     $db56->exec("CREATE TABLE IF NOT EXISTS Resenas_p (
         id_usuario INT,
         id_videojuego INT,
         titulo TEXT,
         texto TEXT,
-        veredicto BOOLEAN,
+        veredicto TEXT,
         FOREIGN KEY (id_usuario) REFERENCES usuarios_p(id),
         FOREIGN KEY (id_videojuego) REFERENCES videojuegos(id)
-    );");
-
-    // Iniciar la transacción después de la preparación de consultas
-    $db56->beginTransaction();
+        );");
 
     // Preparar consulta para insertar datos en Resenas
     $insertQuery = $db56->prepare("INSERT INTO Resenas_p (id_usuario, id_videojuego, titulo, texto, veredicto) 
@@ -44,41 +44,30 @@ try {
             echo "Error2: videojuego no encontrado para vid: {$row['vid']}\n";
             continue; 
         }
-            
-        try {
-            // $veredicto = ($row['veredicto'] == 1) ? true : false;
-            $veredicto = ($row['veredicto'] == 1) ? true : false;
 
-            $titulo_utf8 = $row['titulo'];
-            $texto_utf8 = $row['texto'];
-            $insertQuery->execute([
-                ':id_usuario' => $row['uid'], 
-                ':id_videojuego' => $row['vid'], 
-                ':titulo' => $row['titulo'], 
-                ':texto' => $row['texto'], 
-                ':veredicto' => $row['veredicto']
-            ]);
-            if ($insertQuery->rowCount() == 0) {
-                throw new Exception("Error al insertar los datos en Resenas_p");
-            }
-        } catch (PDOException $ex) {
-            // Manejar la excepción específica que ocurrió durante la inserción
-            echo "Error al insertar datos en Resenas_p: " . $ex->getMessage();
-            $db56->rollBack();
+        
+        $insertQuery->execute([
+            ':id_usuario' => $row['uid'], 
+            ':id_videojuego' => $row['vid'], 
+            ':titulo' => $row['titulo'], 
+            ':texto' => $row['texto'], 
+            ':veredicto' => $row['veredicto']
+        ]);
+        if ($insertQuery->rowCount() == 0) {
+            throw new Exception("Error al insertar los datos en Resenas");
         }
     }
 
     $db56->commit();
 
-    echo "La tabla 'Resenas_p' ha sido creada con éxito en la base de datos db56.";
+    echo "La tabla 'Resenas' ha sido creada con éxito en la base de datos db56.";
 
 } catch (PDOException $e) {
-    // Rollback en caso de error
     $db56->rollBack();
     echo "Error PDO: " . $e->getMessage();
 } catch (Exception $e) {
-    // Rollback en caso de error
     $db56->rollBack();
     echo "Error General: " . $e->getMessage();
 }
+
 ?>
