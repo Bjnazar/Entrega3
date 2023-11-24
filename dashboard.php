@@ -40,7 +40,7 @@
 <?php include 'navbar.php'; ?>
 
 <section>
-    <!-- El contenido de la sección se cargará según la página enlazada -->
+    <h2>Bienvenido, <?php echo $_SESSION['username']; ?>!</h2>
 </section>
 
 </body>

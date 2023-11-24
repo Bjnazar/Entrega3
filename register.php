@@ -21,18 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!DOCTYPE html>
-<form method="post">
-    Nombre: <input type="text" name="nombre" required><br>
-    Email: <input type="email" name="mail" required><br>
-    Contraseña: <input type="password" name="password" required><br>
-    Nombre de Usuario: <input type="text" name="username" required><br>
-    Fecha de Nacimiento: <input type="date" name="fecha_nacimiento" required><br>
-    <input type="submit" value="Registrarse">
-</form>
-
-
-
-
 
 <html lang="en">
 <head>
@@ -44,12 +32,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 <div class="container">
-  <h2>Register Here </h2>
+  <h2>Registrarse </h2>
   <form method="post">
   
     <div class="form-group">
       <label for="name">Nombre:</label>
       <input type="text" class="form-control" id="name" name="name" requuired>
+    </div>
+
+    <div class="form-group">
+      <label for="pwd">Nombre de Usuario:</label>
+      <input type="text" class="form-control" id="pwd" name="pwd">
     </div>
     
     <div class="form-group">
@@ -61,18 +54,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <label for="password">Contraseña:</label>
       <input type="password" name="password" class="form-control" id="password"  name="contraseña">
     </div>
-    
-    <div class="form-group">
-      <label for="pwd">Nombre de Usuario:</label>
-      <input type="text" class="form-control" id="pwd" name="pwd">
-    </div>
 
     <div class="form-group">
-      <label for="pwd">Nombre de Usuario:</label>
-      <input type="text" class="form-control" id="pwd" name="pwd">
+      <label for="fecha_nacimiento">Fecha de nacimiento:</label>
+      <input type="date" id="fecha_nacimiento" name="fecha_nacimiento">
     </div>
      
-    <input type="submit" name="submit" class="btn btn-primary" value="Submit">
+    <input type="submit" name="submit" class="btn btn-primary" value="Registrarse">
   </form>
 </div>
 </body>

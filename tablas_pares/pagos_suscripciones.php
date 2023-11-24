@@ -3,11 +3,9 @@
 require_once('../config/conexion.php');
 
 try {
-    // Extraer los datos de la base de datos db
     $queryDb = "SELECT uid, vid, pid, fecha FROM mala_pagos_p;";
     $data = $db->query($queryDb)->fetchAll(PDO::FETCH_ASSOC);
 
-    // Crear la tabla en db56 y luego insertar los datos
     $db56->beginTransaction();
 
     // Asegúrate de que la tabla Pagos_Suscripciones no exista antes de crearla

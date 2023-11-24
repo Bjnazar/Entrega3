@@ -3,15 +3,12 @@
 require_once('../config/conexion.php');
 
 try {
-    // Extraer los datos de la base de datos db
     $queryDb = "SELECT DISTINCT uid, vid, titulo, texto, veredicto FROM mala_usuario_actividades_p
                 WHERE titulo IS NOT NULL;";
     $data = $db->query($queryDb)->fetchAll(PDO::FETCH_ASSOC);
 
-    // Crear la tabla en db56 y luego insertar los datos
     $db56->beginTransaction();
 
-    // Asegúrate de que la tabla Resenas no exista antes de crearla
     $db56->exec("CREATE TABLE IF NOT EXISTS Resenas_p (
         id_usuario INT,
         id_videojuego INT,
@@ -22,7 +19,6 @@ try {
         FOREIGN KEY (id_videojuego) REFERENCES videojuegos(id)
         );");
 
-    // Preparar consulta para insertar datos en Resenas
     $insertQuery = $db56->prepare("INSERT INTO Resenas_p (id_usuario, id_videojuego, titulo, texto, veredicto) 
     VALUES (:id_usuario, :id_videojuego, :titulo, :texto, :veredicto);");
 
@@ -45,12 +41,18 @@ try {
             continue; 
         }
 
+        if ($row['texto'] == null) {
+            continue;
+        }
+
+        $titulo = str_replace(['√°', '√©', '√≠', '√≥', '√∫'], ['á', 'é', 'í', 'ó', 'ú'], $row['titulo']);
+        $texto = str_replace(['√°', '√©', '√≠', '√≥', '√∫'], ['á', 'é', 'í', 'ó', 'ú'], $row['texto']);
         
         $insertQuery->execute([
             ':id_usuario' => $row['uid'], 
             ':id_videojuego' => $row['vid'], 
-            ':titulo' => $row['titulo'], 
-            ':texto' => $row['texto'], 
+            ':titulo' => $titulo, 
+            ':texto' => $texto, 
             ':veredicto' => $row['veredicto']
         ]);
         if ($insertQuery->rowCount() == 0) {

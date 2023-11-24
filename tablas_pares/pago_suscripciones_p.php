@@ -3,7 +3,7 @@
 require_once('../config/conexion.php');
 
 try {
-    $queryDb = "SELECT pagoid, monto, fecha, uid, preorden, pid, vid, sid 
+    $queryDb = "SELECT pagoid, monto, fecha, pid, sid 
                 FROM mala_pagos_p 
                 WHERE sid IS NOT NULL;";
 
@@ -28,16 +28,28 @@ try {
     );");
 
     foreach ($data as $row) {
-        
-        if ($row['sid'] === null || $row['pid'] === null) {
-            continue;
-        }
-        $subsIdExistsQuery = $db56->prepare("SELECT id FROM suscripciones_p WHERE id = :subs_id;");
-        $subsIdExistsQuery->execute([':subs_id' => $row['sid']]);
-        $subsIdExists = $subsIdExistsQuery->rowCount() > 0;
+        $subsInfoQuery = $db56->prepare("SELECT id_videojuego, id_usuario FROM suscripciones_p WHERE id = :subs_id;");
+        $subsInfoQuery->execute([':subs_id' => $row['sid']]);
+        $subsInfo = $subsInfoQuery->fetch(PDO::FETCH_ASSOC);
 
-        if (!$subsIdExists) {
-            continue;
+        if (!$subsInfo) {
+            continue; // si no existe el registro de la subs_id, entonces no lo guardamos
+        }
+
+        $proveedorQuery = $db56->prepare("SELECT id_proveedor FROM videojuego_suscripcion_proveedor WHERE id_videojuego = :id_videojuego;");
+        $proveedorQuery->execute([':id_videojuego' => $subsInfo['id_videojuego']]);
+        $idProveedor = $proveedorQuery->fetchColumn();
+
+        if (!$idProveedor) {
+            continue; // si no hay proveedores, no lo guardamos
+        }
+
+        $relacionQuery = $db56->prepare("SELECT COUNT(*) FROM usuario_proveedor_p WHERE id_usuario = :id_usuario AND id_proveedor = :id_proveedor;");
+        $relacionQuery->execute([':id_usuario' => $subsInfo['id_usuario'], ':id_proveedor' => $idProveedor]);
+        $relacionExistente = $relacionQuery->fetchColumn();
+
+        if (!$relacionExistente) {
+            continue; // si el usuario tiene cuenta con el proveedor
         }
 
         $insertQuery->execute([
